@@ -1,0 +1,334 @@
+import numpy as np
+import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
+# dam1 benefits
+d1_b1 = (1.1, 2, 2.8)
+d1_b2 = (8, 12, 14.9)
+d1_b3 = (1.4, 1.4, 2.2)
+d1_b4 = (6.5, 9.8, 14.6)
+d1_b5 = (1.7, 2.4, 3.6)
+d1_b6 = (0, 1.6, 2.4)
+
+# dam1 cost
+d1_c1 = (13.2, 14.2, 19.1)
+d1_c2 = (3.5, 4.9, 7.4)
+
+#dam1 benefit params
+d1_benefit_params = [d1_b1, d1_b2, d1_b3, d1_b4, d1_b5, d1_b6]
+
+# dam1 cost params
+d1_cost_params = [d1_c1, d1_c2]
+# dam2 benefits
+d2_b1 = (2.1, 3, 4.8)
+d2_b2 = (8.7, 12.2, 13.6)
+d2_b3 = (2.3, 3, 3)
+d2_b4 = (5.9, 8.7, 15)
+d2_b5 = (0, 3.4, 3.4)
+d2_b6 = (0, 1.2, 1.8)
+
+# dam2 cost
+d2_c1 = (12.8, 15.8, 20.1)
+d2_c2 = (3.8, 5.7, 8)
+
+
+#dam1 benefit params
+d2_benefit_params = [d2_b1, d2_b2, d2_b3, d2_b4, d2_b5, d2_b6]
+
+# dam1 cost params
+d2_cost_params = [d2_c1, d2_c2]
+
+# Simulate 10,000 benefit-cost ratios for Dam 1
+ratios_dam1 = []
+benefits_dam1 = []
+costs_dam1 = []
+for i in range(10000):
+    benefits = np.array([np.random.triangular(*params) for params in d1_benefit_params])
+    costs = np.array([np.random.triangular(*params) for params in d1_cost_params])
+    ratio = benefits.sum() / costs.sum()
+    benefits_dam1.append(sum(benefits))
+    costs_dam1.append(sum(costs))
+    ratios_dam1.append(ratio)
+
+
+
+alpha1 = ratios_dam1
+# Simulate 10,000 benefit-cost ratios for Dam 1
+ratios_dam2 = []
+benefits_dam2 = []
+costs_dam2 = []
+for i in range(10000):
+    benefits = np.array([np.random.triangular(*params) for params in d2_benefit_params])
+    costs = np.array([np.random.triangular(*params) for params in d2_cost_params])
+    ratio = benefits.sum() / costs.sum()
+    benefits_dam2.append(sum(benefits))
+    costs_dam2.append(sum(costs))
+    ratios_dam2.append(ratio)
+
+alpha2 = ratios_dam2
+# tabular distribution for alpha1 (Benefit-cost ratio for Dam1 Project)
+# Tabular frequency distribution for alpha1
+alpha1_counts, alpha1_bins = np.histogram(alpha1, bins=5)
+alpha1_bins = np.round(alpha1_bins, 1)
+alpha1_df = pd.DataFrame({'Alpha1 Bins': alpha1_bins[1:], 'Frequency': alpha1_counts})
+alpha1_df.set_index('Alpha1 Bins', inplace=True)
+print(alpha1_df)
+# Frequency distribution for alpha1
+plt.hist(alpha1, bins=200)
+plt.title("Frequency Distribution for Alpha1")
+plt.xlabel("Alpha1 values")
+plt.ylabel("Frequency")
+plt.show()
+
+
+# Tabular frequency distribution for alpha2
+alpha2_counts, alpha2_bins = np.histogram(alpha2, bins=200)
+alpha2_bins = np.round(alpha2_bins, 1)
+alpha2_df = pd.DataFrame({'Alpha2 Bins': alpha2_bins[1:], 'Frequency': alpha2_counts})
+alpha2_df.set_index('Alpha2 Bins', inplace=True)
+print(alpha2_df)
+
+# Frequency distribution for alpha2
+plt.hist(alpha2, bins=200)
+plt.title("Frequency Distribution for Alpha2")
+plt.xlabel("Alpha2 values")
+plt.ylabel("Frequency")
+plt.show()
+
+# Observed Values for Dam1
+# Calculate the observed mean of total benefits
+observed_mean_benefits_dam1 = np.mean(benefits_dam1)
+observed_std_benefits_dam1 = np.std(benefits_dam1)
+observed_mean_costs_dam1 = np.mean(costs_dam1)
+observed_std_costs_dam1 = np.std(costs_dam1)
+observed_mean_bcr_dam1 = np.mean(alpha1)
+observed_std_bcr_dam1 = np.std(alpha1)
+
+
+
+# Calculate the theoretical mean of total benefits
+total_theoretical_benefits_dam1 = [np.mean(d1_b1), np.mean(d1_b2), np.mean(d1_b3), np.mean(d1_b4), np.mean(d1_b5), np.mean(d1_b6)]
+total_theoretical_costs_dam1 = [np.mean(d1_c1), np.mean(d1_c2)]
+theoretical_mean_benefits_dam1 = np.sum([np.mean(d1_b1), np.mean(d1_b2), np.mean(d1_b3), np.mean(d1_b4), np.mean(d1_b5), np.mean(d1_b6)])
+theoretical_std_benefits_dam1 = np.std([np.std(d1_b1), np.std(d1_b2),np.std(d1_b3), np.std(d1_b4), np.std(d1_b5), np.std(d1_b6)])
+theoretical_mean_costs_dam1 = np.sum([np.mean(d1_c1), np.mean(d1_c2)])
+theoretical_std_costs_dam1 = np.std(total_theoretical_costs_dam1)
+theoretical_mean_bcr_dam1 = ""
+theoretical_std_bcr_dam1 = ""
+
+# Print the results
+
+# observed values
+print("Observed Mean of Total Benefits: ", observed_mean_benefits_dam1)
+print("Observed Std of Total Benefits: ", observed_std_benefits_dam1)
+print("Observed Mean of Total Benefits: ", observed_mean_costs_dam1)
+print("Observed Std of Total Benefits: ", observed_std_costs_dam1)
+print("Observed Mean of Total Benefits: ", observed_mean_bcr_dam1)
+print("Observed Std of Total Benefits: ", observed_std_bcr_dam1)
+
+# theoretical values
+print("Theoretical Mean of Total Benefits: ", theoretical_mean_benefits_dam1)
+print("Theoretical Std of Total Benefits: ", theoretical_std_benefits_dam1)
+print("Theoretical Mean of Total Costs: ", theoretical_mean_costs_dam1)
+print("Theoretical Std of Total Costs: ", theoretical_std_costs_dam1)
+# print("Theoretical Mean of Total Benefits: ", observed_mean_benefits_dam1)
+# print("Theoretical Mean of Total Benefits: ", observed_mean_benefits_dam1)
+
+dam1_benefit_cost_stats = pd.DataFrame({'Dam1': ["Mean of the Total Benefits",      
+"SD of the Total Benefits",      
+"Mean of the Total Cost",        
+"SD of the Total Cost ",       
+"Mean of the Benefit-cost Ratio",   
+"SD of the Benefit-cost Ratio"]  , 
+'Observed' : [observed_mean_benefits_dam1,
+observed_std_benefits_dam1,
+observed_mean_costs_dam1 ,
+observed_std_costs_dam1,
+observed_mean_bcr_dam1,
+observed_std_bcr_dam1], 
+'Theoretical':[theoretical_mean_benefits_dam1,
+theoretical_std_benefits_dam1,
+theoretical_mean_costs_dam1 ,
+theoretical_std_costs_dam1,
+theoretical_mean_bcr_dam1,
+theoretical_std_bcr_dam1]})
+
+dam1_benefit_cost_stats
+
+# Observed Values for Dam2
+# Calculate the observed mean of total benefits
+observed_mean_benefits_dam2 = np.mean(benefits_dam2)
+observed_std_benefits_dam2 = np.std(benefits_dam2)
+observed_mean_costs_dam2 = np.mean(costs_dam2)
+observed_std_costs_dam2 = np.std(costs_dam2)
+observed_mean_bcr_dam2 = np.mean(alpha1)
+observed_std_bcr_dam2 = np.std(alpha1)
+
+
+
+# Calculate the theoretical mean of total benefits
+total_theoretical_benefits_dam2 = [np.mean(d2_b1), np.mean(d2_b2), np.mean(d2_b3), np.mean(d2_b4), np.mean(d2_b5), np.mean(d2_b6)]
+total_theoretical_costs_dam2 = [np.mean(d2_c1), np.mean(d2_c2)]
+theoretical_mean_benefits_dam2 = np.sum([np.mean(d2_b1), np.mean(d2_b2), np.mean(d2_b3), np.mean(d2_b4), np.mean(d2_b5), np.mean(d2_b6)])
+theoretical_std_benefits_dam2 = np.sum([np.std(d2_b1), np.std(d2_b2),np.std(d2_b3), np.std(d2_b4), np.std(d2_b5), np.std(d2_b6)])
+theoretical_mean_costs_dam2 = np.sum([np.mean(d2_c1), np.mean(d2_c2)])
+theoretical_std_costs_dam2 = np.std(total_theoretical_costs_dam2)
+theoretical_mean_bcr_dam2 = ""
+theoretical_std_bcr_dam2 = ""
+
+# Print the results
+
+# observed values
+print("Observed Mean of Total Benefits: ", observed_mean_benefits_dam2)
+print("Observed Std of Total Benefits: ", observed_std_benefits_dam2)
+print("Observed Mean of Total Benefits: ", observed_mean_costs_dam2)
+print("Observed Std of Total Benefits: ", observed_std_costs_dam2)
+print("Observed Mean of Total Benefits: ", observed_mean_bcr_dam2)
+print("Observed Std of Total Benefits: ", observed_std_bcr_dam2)
+
+# theoretical values
+print("Theoretical Mean of Total Benefits: ", theoretical_mean_benefits_dam2)
+print("Theoretical Std of Total Benefits: ", theoretical_std_benefits_dam2)
+print("Theoretical Mean of Total Costs: ", theoretical_mean_costs_dam2)
+print("Theoretical Std of Total Costs: ", theoretical_std_costs_dam2)
+# print("Theoretical Mean of Total Benefits: ", observed_mean_benefits_dam2)
+# print("Theoretical Mean of Total Benefits: ", observed_mean_benefits_dam2)
+
+dam2_benefit_cost_stats = pd.DataFrame({'Dam2': ["Mean of the Total Benefits",      
+"SD of the Total Benefits",      
+"Mean of the Total Cost",        
+"SD of the Total Cost ",       
+"Mean of the Benefit-cost Ratio",   
+"SD of the Benefit-cost Ratio"]  , 
+'Observed' : [observed_mean_benefits_dam2,
+observed_std_benefits_dam2,
+observed_mean_costs_dam2 ,
+observed_std_costs_dam2,
+observed_mean_bcr_dam2,
+observed_std_bcr_dam2], 
+'Theoretical':[theoretical_mean_benefits_dam2,
+theoretical_std_benefits_dam2,
+theoretical_mean_costs_dam2 ,
+theoretical_std_costs_dam2,
+theoretical_mean_bcr_dam2,
+theoretical_std_bcr_dam2]})
+
+dam2_benefit_cost_stats
+
+d1_data = pd.DataFrame({"Benefits": benefits_dam1,
+                        "Costs": costs_dam1,
+                        "alpha1": alpha1})
+
+d2_data = pd.DataFrame({"Benefits": benefits_dam2,
+                        "Costs": costs_dam2,
+                        "alpha2": alpha2})
+
+
+from scipy.stats import chi2, chisquare
+
+# Define the theoretical distribution
+def theoretical_distribution(x, df, loc, scale):
+    return chi2.pdf(x, df, loc, scale)
+    
+from scipy.stats import gamma
+
+# Fit a gamma distribution to alpha1
+shape1, loc1, scale1 = gamma.fit(d1_data["alpha1"])
+
+# Generate 10,000 random numbers from the gamma distribution with the estimated parameters
+simulated_alpha1 = gamma.rvs(shape1, loc=loc1, scale=scale1, size=10000)
+
+# Conduct a chi-squared goodness-of-fit test to compare the observed and simulated alpha1 values
+observed_freq1, _ = np.histogram(alpha1, bins=10)
+expected_freq1, _ = np.histogram(simulated_alpha1, bins=10)
+chi2_statistic1, p_value1 = chisquare(observed_freq1, f_exp=expected_freq1)
+
+# Print the results of the goodness-of-fit test for alpha1
+print("Results of chi-squared goodness-of-fit test for alpha1:")
+print("Chi-squared statistic:", chi2_statistic1)
+print("P-value:", p_value1)
+
+# Fit a gamma distribution to alpha2
+shape2, loc2, scale2 = gamma.fit(alpha2)
+
+# Generate 10,000 random numbers from the gamma distribution with the estimated parameters
+simulated_alpha2 = gamma.rvs(shape2, loc=loc2, scale=scale2, size=10000)
+
+# Conduct a chi-squared goodness-of-fit test to compare the observed and simulated alpha2 values
+observed_freq2, _ = np.histogram(alpha2, bins=10)
+expected_freq2, _ = np.histogram(simulated_alpha2, bins=10)
+chi2_statistic2, p_value2 = chisquare(observed_freq2, f_exp=expected_freq2)
+
+# Print the results of the goodness-of-fit test for alpha2
+print("Results of chi-squared goodness-of-fit test for alpha2:")
+print("Chi-squared statistic:", chi2_statistic2)
+print("P-value:", p_value2)
+
+# Set the significance level alpha
+alpha = 0.05
+
+# Set the degrees of freedom
+df = 9
+
+# Define the critical value for the chi-squared distribution
+critical_value = chi2.ppf(q=1-alpha, df=df)
+
+# Print the critical value
+print("Critical value:", critical_value)
+
+# Print the results of the hypothesis test for alpha1
+if chi2_statistic1 > critical_value:
+    print("Reject the null hypothesis for alpha1 since chi2_statistic greater than critical value")
+else:
+    print("Fail to reject the null hypothesis for alpha1 since chi2_statistic less than critical value")
+
+if p_value1 < alpha:
+    print("Reject the null hypothesis for alpha1 since pvalue less than critical value")
+else:
+    print("Fail to reject the null hypothesis for alpha1 since pvalue greater than critical value")
+
+# Print the results of the hypothesis test for alpha2
+if chi2_statistic2 > critical_value:
+    print("Reject the null hypothesis for alpha2 since chi2_statistic greater than critical value")
+else:
+    print("Fail to reject the null hypothesis for alpha2 since chi2_statistic less than critical value")
+
+if p_value2 < alpha:
+    print("Reject the null hypothesis for alpha2 since pvalue less than critical value")
+else:
+    print("Fail to reject the null hypothesis for alpha2 since pvalue greater than critical value")
+    
+def proportion_check(alpha_list, x_i):
+  prop = sum([1 for x in alpha_list if x > x_i]) / len(alpha_list)
+  return prop
+
+
+def get_metrics(alpha_list):
+  minimum = min(alpha_list)
+  maximum = max(alpha_list)
+  mean = np.mean(alpha_list)
+  median = np.median(alpha_list)
+  var = np.var(alpha_list)
+  std = np.std(alpha_list)
+  skewness = sum([((x - mean) / var) ** 3 for x in alpha_list]) * len(alpha_list) / ((len(alpha_list) - 1) * (len(alpha_list) - 2))
+  prop_2 = proportion_check(alpha_list, 2)
+  prop_1_8 = proportion_check(alpha_list, 1.8)
+  prop_1_5 = proportion_check(alpha_list, 1.5)
+  prop_1_2 = proportion_check(alpha_list, 1.2)
+  prop_1 = proportion_check(alpha_list, 1)
+
+  return [minimum, maximum, mean, median, var, std, skewness, prop_2, prop_1_8, prop_1_5, prop_1_2, prop_1]
+
+
+df = {"Metric": ["Minimum", "Maximum", "Mean", "Median", "Variance", "Standard Deviation", "SKEWNESS", "P(𝛂i > 2)", "P(𝛂i > 1.8)", "P(𝛂i > 1.5)", "P(𝛂i > 1.2)", "P(𝛂i > 1)"],
+      "alpha1": get_metrics(alpha1),
+      "alpha2": get_metrics(alpha2)
+      }
+
+df = pd.DataFrame(df)
+df["alpha1>alpha2"] = df.alpha1 > df.alpha2
+df
+
+
+prop_a1_a2 = sum(df["alpha1>alpha2"])/df.shape[0]
+print(f"Proportion of values for which alpha1 is more than alpha2 is : {prop_a1_a2}")
