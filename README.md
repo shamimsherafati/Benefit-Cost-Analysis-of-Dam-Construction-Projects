@@ -2,4 +2,4 @@
 
 ### Course: ALY6050- Northeastern University
 
-### Program Language used: R programming language 
+### Program Language used: Python and R programming language 
